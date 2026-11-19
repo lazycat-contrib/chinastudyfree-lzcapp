@@ -1,0 +1,29 @@
+version: 1
+
+project:
+  root: .
+  build_config: lzc-build.yml
+  package_file: package.yml
+  output: .lazycat-build/chinastudyfree.lpk
+  target_arch: amd64
+
+update:
+  strategy: publish
+  # 上游只打 tag 不发镜像；版本随打包仓库走（拉取的上游 commit 固定在 UPSTREAM.conf）。
+  version_source:
+    type: git
+
+build:
+  toolchains:
+    - kind: docker
+  run_buildscript: true
+  # 源码不入库：build.sh 在构建前按 UPSTREAM.conf 拉取上游
+
+stores:
+  private:
+    enabled: true
+    skip_if_version_exists: true
+    name: 聪聪学堂
+    summary: "聪聪学堂（ChinaStudyFree）懒猫微服打包：免费公益 AI 学习平台，四学段 148 本教材互动课程 + EdgeTTS 朗读 + AI 出题讲解，1886 本开源教材目录（MIT）。"
+  official:
+    enabled: false

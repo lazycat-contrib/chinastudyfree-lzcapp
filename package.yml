@@ -1,0 +1,21 @@
+package: community.lazycat.app.chinastudyfree
+version: 0.1.0
+name: 聪聪学堂
+description: "Free AI learning platform covering primary, middle, high school and college levels: interactive courses from 148 textbooks, 12 subjects, free EdgeTTS read-aloud, story generation and an open textbook catalog of 1886 titles. Optional online AI features can be configured with your own API keys."
+min_os_version: 1.5.0
+homepage: https://github.com/tanle-mtr/ChinaStudyFree
+author: tanle-mtr
+license: MIT
+permissions:
+  required:
+    - net.internet
+locales:
+  zh:
+    name: "聪聪学堂"
+    description: "免费公益 AI 学习平台，覆盖小学/初中/高中/大学四个学段：148 本教材互动课程、12 个学科、免费 EdgeTTS 语音朗读、AI 出题/讲解/故事生成，内置 1886 本开源教材目录。离线课程内容开箱即用；在线 AI 能力可选配置自己的 API Key。"
+  zh_CN:
+    name: "聪聪学堂"
+    description: "免费公益 AI 学习平台，覆盖小学/初中/高中/大学四个学段：148 本教材互动课程、12 个学科、免费 EdgeTTS 语音朗读、AI 出题/讲解/故事生成，内置 1886 本开源教材目录。离线课程内容开箱即用；在线 AI 能力可选配置自己的 API Key。"
+  en:
+    name: "ChinaStudyFree"
+    description: "Free AI learning platform covering primary, middle, high school and college levels: interactive courses from 148 textbooks, 12 subjects, free EdgeTTS read-aloud, story generation and an open textbook catalog of 1886 titles. Optional online AI features can be configured with your own API keys."

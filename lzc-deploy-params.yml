@@ -1,0 +1,95 @@
+params:
+  - id: llm_base_url
+    type: string
+    name: "LLM Base URL"
+    description: "OpenAI-compatible API base URL for online AI features (leave empty to use offline pre-generated content)"
+    default_value: "https://api.openai.com/v1"
+    optional: true
+
+  - id: llm_api_key
+    type: secret
+    name: "LLM API Key"
+    description: "API key for the online AI features (quiz/explain/story). Leave empty to disable"
+    default_value: ""
+    optional: true
+
+  - id: llm_model
+    type: string
+    name: "LLM Model"
+    description: "Model name for the LLM API (e.g. gpt-4o-mini)"
+    default_value: "gpt-4o-mini"
+    optional: true
+
+  - id: dashscope_api_key
+    type: secret
+    name: "DashScope API Key"
+    description: "Alibaba DashScope key for free TTS voice and image generation. Leave empty to disable"
+    default_value: ""
+    optional: true
+
+  - id: gemini_api_key
+    type: secret
+    name: "Gemini API Key"
+    description: "Google Gemini key (alternative AI provider). Leave empty to disable"
+    default_value: ""
+    optional: true
+
+  - id: tts_voice
+    type: string
+    name: "TTS Voice"
+    description: "DashScope CosyVoice voice name"
+    default_value: "longxiaochun"
+    optional: true
+
+  - id: tts_model
+    type: string
+    name: "TTS Model"
+    description: "DashScope TTS model name"
+    default_value: "cosyvoice-v1"
+    optional: true
+
+locales:
+  zh:
+    llm_base_url:
+      name: "LLM 接口地址"
+      description: "OpenAI 兼容 API 地址（留空 Key 时在线 AI 自动降级为离线内容）"
+    llm_api_key:
+      name: "LLM API Key"
+      description: "在线 AI（出题/讲解/故事）的 API Key，留空则不启用"
+    llm_model:
+      name: "LLM 模型"
+      description: "LLM 模型名（如 gpt-4o-mini）"
+    dashscope_api_key:
+      name: "灵积 DashScope Key"
+      description: "阿里灵积 Key，用于免费 TTS 语音与课本配图，留空则不启用"
+    gemini_api_key:
+      name: "Gemini Key"
+      description: "Google Gemini Key（备用 AI 通道），留空则不启用"
+    tts_voice:
+      name: "TTS 音色"
+      description: "灵积 CosyVoice 音色名"
+    tts_model:
+      name: "TTS 模型"
+      description: "灵积 TTS 模型名"
+  en:
+    llm_base_url:
+      name: "LLM Base URL"
+      description: "OpenAI-compatible API base URL (leave empty to use offline content)"
+    llm_api_key:
+      name: "LLM API Key"
+      description: "API key for online AI (quiz/explain/story). Leave empty to disable"
+    llm_model:
+      name: "LLM Model"
+      description: "Model name for the LLM API (e.g. gpt-4o-mini)"
+    dashscope_api_key:
+      name: "DashScope API Key"
+      description: "Alibaba DashScope key for TTS voice and image generation. Leave empty to disable"
+    gemini_api_key:
+      name: "Gemini API Key"
+      description: "Google Gemini key (alternative AI provider). Leave empty to disable"
+    tts_voice:
+      name: "TTS Voice"
+      description: "DashScope CosyVoice voice name"
+    tts_model:
+      name: "TTS Model"
+      description: "DashScope TTS model name"

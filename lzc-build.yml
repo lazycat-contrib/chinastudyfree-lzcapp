@@ -1,0 +1,10 @@
+manifest: ./lzc-manifest.yml
+pkgout: ./
+icon: ./icon.png
+contentdir: ./content
+buildscript: ./build.sh
+images:
+  chinastudyfree:
+    dockerfile: ./docker/Dockerfile
+    context: .
+    builder: local

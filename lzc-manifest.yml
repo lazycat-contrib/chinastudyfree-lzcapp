@@ -1,0 +1,107 @@
+application:
+  subdomain: chinastudyfree
+  multi_instance: false
+  public_path:
+    - /
+  upstreams:
+    - location: /
+      backend: http://chinastudyfree:8787/
+  injects:
+    # 免密说明：应用本身无账号密码体系（学习数据本地存储），无需登录注入。
+    # 文件选择器拦截（商店强制）：应用有上传/下载功能（存档备份导入导出、分享卡片保存）
+    - id: open-save-chooser
+      on: browser
+      when:
+        - /*
+      do:
+        - src: file:///lzcapp/pkg/content/lazycat-injects/lzc-file-chooser-inject.js
+          params:
+            fileBridgeRoot: /__lazycat_file_bridge
+    - id: lazycat-file-bridge
+      on: request
+      auth_required: false
+      when:
+        - /__lazycat_file_bridge/*
+      do:
+        src: |
+          const bridgePrefix = "/__lazycat_file_bridge";
+          const requestHost = String(ctx.request.host || "")
+            .split(":")[0]
+            .toLowerCase();
+          const firstDot = requestHost.indexOf(".");
+          const method = String(ctx.request.method || "").toUpperCase();
+
+          if (
+            firstDot <= 0 ||
+            !requestHost.endsWith(".heiyu.space") ||
+            !["GET", "HEAD", "PUT"].includes(method)
+          ) {
+            ctx.response.send(
+              ["GET", "HEAD", "PUT"].includes(method) ? 400 : 405,
+              "Invalid LazyCat file bridge request",
+            );
+            return;
+          }
+
+          const boxDomain = requestHost.slice(firstDot + 1);
+          const fileOrigin = "https://file." + boxDomain;
+          const targetPath =
+            "/files/home" + ctx.request.path.slice(bridgePrefix.length);
+
+          if (method === "PUT") {
+            const body = ctx.body.raw();
+            ctx.proxy.to(fileOrigin + targetPath, {
+              method: "PUT",
+              headers: ctx.headers.clone(),
+              body: body,
+            });
+            return;
+          }
+
+          ctx.proxy.to(fileOrigin + targetPath, {
+            method: method,
+            headers: ctx.headers.clone(),
+          });
+
+services:
+  chinastudyfree:
+    # 源码构建（context=upstream，上游 docker/Dockerfile 改编）；由 Action 以 builder:local 内嵌进 LPK
+    image: embed:chinastudyfree
+    environment:
+      # 静态产物与端口沿用上游默认
+      - STATIC_DIR=/app/apps/web/out
+      - PORT=8787
+      # 在线 AI 能力（可选）：用户可在安装参数里填自己的 Key，留空则对应能力自动降级为离线预生成内容
+      - LLM_BASE_URL={{ .U.llm_base_url }}
+      - LLM_API_KEY={{ .U.llm_api_key }}
+      - LLM_MODEL={{ .U.llm_model }}
+      - DASHSCOPE_API_KEY={{ .U.dashscope_api_key }}
+      - GEMINI_API_KEY={{ .U.gemini_api_key }}
+      - TTS_VOICE={{ .U.tts_voice }}
+      - TTS_MODEL={{ .U.tts_model }}
+      - CORS_ORIGIN=*
+    healthcheck:
+      test:
+        - CMD-SHELL
+        - "node -e \"fetch('http://localhost:8787/api/health').then(r=>process.exit(r.ok?0:1)).catch(()=>process.exit(1))\""
+      interval: 30s
+      timeout: 5s
+      retries: 3
+      start_period: 20s
+
+usage: |
+  聪聪学堂（ChinaStudyFree）是免费公益 AI 学习平台（MIT 开源），覆盖小学/初中/高中/大学
+  四个学段：148 本教材互动课程、12 个学科、免费语音朗读、AI 出题讲解与故事生成，
+  内置 1886 本开源教材目录。
+
+  【首次使用】
+  1. 打开应用先选学段（小学/初中/高中/大学），再选年级进入互动课程。
+  2. 离线内容（互动课程、课文朗读）开箱即用，无需任何配置。
+  3. 在线 AI 能力（AI 出题/讲解/故事/课本配图）可选：安装时填入自己的
+     LLM / 灵积(DashScope) / Gemini API Key 即启用；留空时自动降级为离线预生成内容。
+
+  【说明】
+  - 应用无账号体系，学习数据保存在浏览器本地；个人中心支持存档导出/导入（JSON）。
+  - 教材中心跳转 GitHub 在线查看 PDF（需外网）。
+  - 上游源码按 UPSTREAM.conf 固定 commit 拉取构建（不入打包仓库）；
+    开源地址 https://github.com/tanle-mtr/ChinaStudyFree
